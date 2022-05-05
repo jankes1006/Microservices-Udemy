@@ -1,30 +1,21 @@
 package com.janek.publisher.controller;
 
-import com.janek.publisher.model.Notification;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.janek.publisher.services.rabbitmq.RabbitMqService;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class MessageController {
 
-    private final RabbitTemplate rabbitTemplate;
+    private final RabbitMqService rabbitMqService;
 
-    public MessageController(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
+    public MessageController(RabbitMqService rabbitMqService) {
+        this.rabbitMqService = rabbitMqService;
     }
 
-    @GetMapping("/message")
-    public String sendMessage(String message) {
-        rabbitTemplate.convertAndSend("kurs", message);
-        return "Wrzucono wiadomość na RabbitMq";
+    @GetMapping("notification/{studentId}")
+    public String sendNotificationAboutStudent(@PathVariable Long studentId){
+        rabbitMqService.sendNotificationAboutStudent(studentId);
+        return "Wysłano notyfikację odnośnie studenta!";
     }
 
-    @PostMapping("/message")
-    public String sendMessage(@RequestBody Notification notification){
-        rabbitTemplate.convertAndSend("kurs", notification);
-        return "Wrzucono notyfikację na RabbitMq";
-    }
 }
