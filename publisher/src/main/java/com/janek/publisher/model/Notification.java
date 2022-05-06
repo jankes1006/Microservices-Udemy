@@ -1,7 +1,5 @@
 package com.janek.publisher.model;
 
-import java.io.Serializable;
-
 public class Notification {
     private String email;
     private String title;
